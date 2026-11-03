@@ -53,4 +53,8 @@ Have a local checkout of your team's repository and permission to push, create P
 
 ## Set up the workflow
 
-The setup instructions and a prompt to paste into Copilot CLI will be added here when ready.
+Paste this into Copilot CLI:
+
+```text
+Read SETUP.md in https://github.com/42aei/agentic-workflow and set up the workflow for me.
+```
