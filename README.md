@@ -56,5 +56,5 @@ Have a local checkout of your team's repository and permission to push, create P
 Paste this into Copilot CLI:
 
 ```text
-Read AGENTS.md in https://github.com/42aei/agentic-workflow and set up the workflow for me.
+Read SETUP.md in https://github.com/42aei/agentic-workflow and set up the workflow for me.
 ```
