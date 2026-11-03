@@ -20,11 +20,9 @@ Run `copilot --version`, then start `copilot`. Use `/login` if prompted and chec
 
 [Other installation options](https://docs.github.com/en/copilot/how-tos/set-up/install-copilot-cli). Node.js is needed only for the npm option (version 22+).
 
-Sign in and start copilot cli to run the next step (if using the agent path) 
+### Get an agent to perform the reset of the setup.
 
-### Get agent help or install manually (Ensure you are signed in before continuing) 
-
-Git, GitHub CLI and OpenSpec are required. Paste this into Copilot CLI for help:
+Git, GitHub CLI and OpenSpec are required and gh cli and copilot cli must be signed in. Paste this into Copilot CLI for help:
 
 ```text
 Help me prepare for the workshop. Check git --version, gh --version and
