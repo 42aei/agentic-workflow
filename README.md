@@ -2,64 +2,55 @@
 
 ## Before the workshop
 
-Have these tools installed and working **before you arrive**. The workshop uses **GitHub Copilot CLI** in your terminal.
+Install **GitHub Copilot CLI** and sign in. You need a GitHub account with Copilot access. If your organization manages access, check that CLI is enabled.
 
-| Required tool | Check in your terminal | Official installation instructions |
-| --- | --- | --- |
-| Git | `git --version` | [Install Git](https://git-scm.com/install) |
-| GitHub CLI (`gh`) | `gh --version` | [Install GitHub CLI](https://github.com/cli/cli#installation) |
-| GitHub Copilot CLI (`copilot`) | `copilot --version` | [Install Copilot CLI](https://docs.github.com/en/copilot/how-tos/set-up/install-copilot-cli) |
-| OpenSpec | `openspec --version` | [Install OpenSpec](https://github.com/Fission-AI/OpenSpec/blob/main/docs/installation.md) |
-
-Use a terminal and a web browser. On Windows, Copilot CLI requires PowerShell 6 or later.
-
-### Install Copilot CLI
-
-Choose the command for your system, or use the other options in the official instructions linked above.
-
-macOS or Linux, with the standalone installer:
+macOS / Linux:
 
 ```sh
 curl -fsSL https://gh.io/copilot-install | bash
 ```
 
-Windows, with WinGet:
+Windows, in PowerShell 6 or later:
 
 ```powershell
 winget install GitHub.Copilot
 ```
 
-Node.js is **not** required for the standalone install. If you choose the npm installation method instead, Copilot CLI requires Node.js 22 or later.
+Run `copilot --version`, then start `copilot`. Use `/login` if prompted and check that you can send a message and receive a reply.
 
-### Install OpenSpec
+[Other installation options](https://docs.github.com/en/copilot/how-tos/set-up/install-copilot-cli). Node.js is needed only for the npm option (version 22+).
 
-macOS or Linux:
+## Get agent help or install manually
 
-```sh
-curl -fsSL https://raw.githubusercontent.com/Fission-AI/OpenSpec/main/scripts/binary/install.sh | sh
+Git, GitHub CLI and OpenSpec are required. Paste this into Copilot CLI for help:
+
+```text
+Help me prepare for the workshop. Check git --version, gh --version and
+openspec --version. For each missing tool, show the official installation
+instructions and command for my system, then ask before installing it.
+Check gh auth status. If login is needed, guide me through gh auth login;
+I will complete login and consent myself. Never ask me to paste a token.
+Ask before changing settings. If I decline a required step or a command
+fails, stop and explain what I need to do. Do not clone a repository,
+initialize OpenSpec in a project or install workflow files yet.
 ```
 
-Windows, in PowerShell:
+This prepares the tools and GitHub login, not the workflow. To install the tools yourself, use the official instructions:
 
-```powershell
-irm https://raw.githubusercontent.com/Fission-AI/OpenSpec/main/scripts/binary/install.ps1 | iex
-```
+| Tool | Check | Install manually |
+| --- | --- | --- |
+| Git | `git --version` | [Git](https://git-scm.com/install) |
+| GitHub CLI | `gh --version` | [GitHub CLI](https://github.com/cli/cli#installation) |
+| OpenSpec | `openspec --version` | [OpenSpec](https://github.com/Fission-AI/OpenSpec/blob/main/docs/installation.md) |
 
-The standalone OpenSpec install does not require Node.js. If `openspec` is not found after installation, follow the official instructions to add its installation folder to your `PATH`, then open a new terminal and check again.
+After installing GitHub CLI, run `gh auth login`. This login is separate from Copilot's.
 
-### Accounts and repository access
+Have a local checkout of your team's repository and permission to push, create PRs and merge the workshop changes. Know the repository name (`owner/repository`) and checkout path. Configure your Git name and email. Setup will not clone the repository for you.
 
-These are access requirements, separate from installing the tools:
+## Optional
 
-- Have a GitHub account with an active Copilot subscription. If your organization manages it, ask your administrator to confirm that Copilot CLI access is enabled.
-- Sign in to GitHub CLI with `gh auth login`. Check that `gh auth status` reports that you are logged in to `github.com`.
-- Start `copilot`. If it asks you to sign in, enter `/login` and follow the prompts. Confirm that you can start a conversation before the workshop.
-- Have write access to the team repository you will work in, and a local checkout of it. Know its GitHub name (`owner/repository`) and the full path to your checkout.
+[GitHub Copilot Desktop App](https://github.com/features/copilot). The workflow is not yet verified in Desktop. Use CLI for the workshop.
 
-### Optional desktop app
+## Set up the workflow
 
-You may also install the [GitHub Copilot Desktop App](https://github.com/features/copilot). It is optional and does not replace the required GitHub Copilot CLI installation.
-
-### Workflow setup
-
-The shared workflow files and setup instructions will be added here separately. This page is the preparation checklist, not an instruction to install the workflow yet.
+The setup instructions and a prompt to paste into Copilot CLI will be added here when ready.
