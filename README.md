@@ -2,7 +2,7 @@
 
 ## Before the workshop
 
-Install **GitHub Copilot CLI** and sign in. You need a GitHub account with Copilot access. If your organization manages access, check that CLI is enabled.
+Install **GitHub Copilot CLI** and sign in. You need a GitHub account with Copilot access. 
 
 macOS / Linux:
 
@@ -20,7 +20,9 @@ Run `copilot --version`, then start `copilot`. Use `/login` if prompted and chec
 
 [Other installation options](https://docs.github.com/en/copilot/how-tos/set-up/install-copilot-cli). Node.js is needed only for the npm option (version 22+).
 
-## Get agent help or install manually
+Sign in and start copilot cli to run the next step (if using the agent path) 
+
+### Get agent help or install manually (Ensure you are signed in before continuing) 
 
 Git, GitHub CLI and OpenSpec are required. Paste this into Copilot CLI for help:
 
