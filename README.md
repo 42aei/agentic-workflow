@@ -22,8 +22,11 @@ Run `copilot --version`, then start `copilot`. Use `/login` if prompted and chec
 
 ### Get an agent to perform the reset of the setup.
 
-Git, GitHub CLI, OpenSpec and agent-browser with its browser installed are required. GitHub CLI and Copilot CLI must be signed in. agent-browser lets the workflow verify browser-visible behaviour in the running app. Paste this into Copilot CLI for help:
+Git, GitHub CLI, OpenSpec and agent-browser with its browser installed are required. 
 
+**GitHub CLI and Copilot CLI must be signed in.**
+
+Paste this into Copilot CLI for help:
 ```text
 Help me prepare for the workshop. Read the Prerequisites and Install a
 missing tool sections of SETUP.md at https://github.com/42aei/agentic-workflow.
