@@ -8,7 +8,7 @@ Paste this into Copilot CLI:
 
 ```text
 Read https://github.com/42aei/agentic-workflow/blob/main/SETUP.md and
-help me set up the workshop prerequisites.
+help me set up the workshop prerequisites and workflow.
 ```
 
 ## Optional
