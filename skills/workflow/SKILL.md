@@ -88,13 +88,13 @@ Before plan review, check:
 - **Outside the repository:** name who does every step on a host, environment, secret or external service. Hold-list steps belong to the human.
 - **Verification works:** local and smoke commands run as written.
 
-Post-merge checks that are slow or need live services are marked as such in `tasks.md`. Dev and review skip them; Lead runs them once after merge, subject to the hold list. Tick these only when run; all implementation tasks must be ticked before the PR is ready.
+Plan and assign checks under [Verification](#verification), including any explicitly marked post-merge checks in `tasks.md`.
 
 ## Verification
 
 Every change needs a relevant check of its observable result, not only a code read or a green build. Lead records the check, expected outcome, environment and owner in `tasks.md` before plan review. For browser-visible behaviour, include an `agent-browser` check of the affected user flow in the running app. For non-browser work, use the relevant CLI, API or other project check; do not open a browser just to satisfy this rule.
 
-- Dev runs local browser checks before marking the PR ready. Review independently re-runs deterministic local browser checks against the PR's code, following the same rules below. Lead runs checks explicitly marked post-merge, including browser flows when applicable, against the merged code. A local app is not a live-service reason to defer a check until after merge. Follow the existing post-merge rule for genuinely slow or live-service checks.
+- Dev runs local browser checks before marking the PR ready. Review independently re-runs deterministic local browser checks against the PR's code, following the same rules below. Genuinely slow checks or checks needing live services are explicitly marked post-merge in `tasks.md`: dev and review skip them; Lead runs them once after merge against the merged code, including browser flows when applicable, subject to the hold list. Tick these only when run; all implementation tasks must be ticked before the PR is ready. A local app is not a live-service reason to defer a check until after merge.
 - Use the project's documented launch command from `AGENTS.md` or its Makefile, in the change's worktree (Lead's merged-code check worktree after merge). Verify that the URL and running app correspond to the code being checked; do not test an unrelated server already on the same port. Record the start command, URL, tested revision, actions, expected result and observed result in the PR evidence, including for class low when a browser check is required. Starting a process is not evidence that the flow passed.
 - Before the first browser use, run `agent-browser --version` and `agent-browser skills get core` and read the version-matched guide. Do not install another skill or use `npx` to obtain the tool. Missing CLI, browser or system libraries go back to the developer through Lead for the approved setup steps in `SETUP.md`.
 - Before any browser/session command, inspect only the names of set `AGENT_BROWSER_*` environment variables and the existence of `~/.agent-browser/config.json` and `agent-browser.json` in the command's working directory. Print no variable values or config contents. Ignore only `AGENT_BROWSER_DEFAULT_TIMEOUT` and `AGENT_BROWSER_IDLE_TIMEOUT_MS`, which change timing, not attachment or state. If any other variable or either file is present, or inspection is unavailable, stop before launch and report through Lead: the developer must provide a clean environment and working directory. Do not unset variables, edit files or silently override settings. This conservative gate rejects inherited settings rather than assuming `--session` prevents attachment, profile reuse, saved authentication, providers or extensions. Keep the checked environment and working directory for all browser commands.
@@ -121,7 +121,7 @@ Browser smoke checks during setup prove that the tool launches, not that the pro
 - Change on a draft PR with no verdict: plan under review.
 - Draft PR with a verdict and unticked tasks: dev is applying.
 - PR ready for review with all tasks ticked (apart from marked post-merge checks): PR review.
-- Merged PR and change under `openspec/changes/archive/`: done.
+- Merged PR, change under `openspec/changes/archive/` and all required checks complete under [Verification](#verification): done.
 - Held or parked: a PR comment headed `Held:` or `Parked:`; keep the PR open.
 
 Both verdicts are on the PR: plan and PR, each per round, with `gh pr review <PR URL> --comment --body-file <file>`. A hold or a park is a PR comment. No other comments.

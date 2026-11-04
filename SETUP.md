@@ -119,6 +119,25 @@ The project is the developer's local checkout of the team repository, the path f
    8. Give the developer the pull request URL and the command to merge it, `gh pr merge <URL> --squash` with the real URL filled in, and say: others get the files when it is merged.
 7. If the developer says no, add nothing and go on. If a command in step 6 fails, report its output, do not try another way, never merge and never push to the default branch, and put the checkout back as step 6.7 says. After a failure the new branch and the files from `openspec init` may remain in the checkout; leave them and tell the developer what is there.
 
+## Shared skills for Codex CLI and Copilot CLI
+
+Both harnesses read user skills from `~/.agents/skills`, so one copy serves both. Follow this section when the chosen harness's installation section refers here; do not install the other harness's agents or configuration.
+
+Copy these files unchanged:
+- `skills/workflow/SKILL.md` to `~/.agents/skills/workflow/SKILL.md`.
+- `skills/show-me/SKILL.md` and `skills/show-me/LICENSE` to `~/.agents/skills/show-me/`. Copy `LICENSE` because the MIT terms require it to travel with the skill.
+- `skills/doc-coauthoring/SKILL.md` to `~/.agents/skills/doc-coauthoring/SKILL.md`.
+
+A target that already exists with identical content needs no write: say so and go on. For a differing target, show the difference and ask before replacing it.
+
+## Shared handover requirements
+
+After the chosen harness's own verification below:
+- List its three installed agent files and four installed skill files (`workflow/SKILL.md`, `show-me/SKILL.md`, `show-me/LICENSE`, `doc-coauthoring/SKILL.md`) with their full paths.
+- Tell the developer the pull request URL from "Add OpenSpec to the project", or why nothing was added.
+
+Then give the start instruction in that harness's section.
+
 ## Claude Code
 
 ### Install the roles and skills
@@ -139,9 +158,8 @@ Then follow `Add OpenSpec to the project` above.
 
 ### Verify and hand over
 
-- List the three installed agent files and the four installed skill files (workflow/SKILL.md, show-me/SKILL.md, show-me/LICENSE, doc-coauthoring/SKILL.md) with their full paths.
 - Check that each agent file's frontmatter parses, has `name` and `description`, and that review has `tools: Read, Grep, Glob, Bash`.
-- Tell the developer the pull request URL from "Add OpenSpec to the project", or why nothing was added.
+- Complete [Shared handover requirements](#shared-handover-requirements).
 - Tell the developer: open a session in the team repository and type `start lead on <request>`.
 
 ## Codex CLI
@@ -169,9 +187,7 @@ developer_instructions = '''
 - Put `<top sentences>` first, each on its own line, in this order: for `read_only: true`, add `You are read-only: do not edit files, commit, push or merge; use shell commands only to run tests and read.` Then for `skills`, add `Use the skills workflow.` using the header's skill names joined with `, `. Add no skills sentence when the header has no `skills`.
 - Drop `read_only` and `skills` after converting. `read_only: false` adds no sentence. Codex has no tool restriction for custom agents, so review is read-only by these instructions only.
 
-Copy `skills/workflow/SKILL.md` to `~/.agents/skills/workflow/SKILL.md`, unchanged. Codex reads user skills from `~/.agents/skills`, not `~/.codex`.
-Copy `skills/show-me/SKILL.md` and `skills/show-me/LICENSE` to `~/.agents/skills/show-me/`, unchanged. Copy `LICENSE` because the MIT terms require it to travel with the skill.
-Copy `skills/doc-coauthoring/SKILL.md` to `~/.agents/skills/doc-coauthoring/SKILL.md`, unchanged.
+Follow [Shared skills for Codex CLI and Copilot CLI](#shared-skills-for-codex-cli-and-copilot-cli). Codex reads user skills from `~/.agents/skills`, not `~/.codex`.
 
 ### Configure `~/.codex/config.toml`
 
@@ -192,9 +208,8 @@ Then follow `Add OpenSpec to the project` above.
 
 ### Verify and hand over
 
-- List the three installed agent files and the four installed skill files (workflow/SKILL.md, show-me/SKILL.md, show-me/LICENSE, doc-coauthoring/SKILL.md) with their full paths.
 - Parse each agent file and `~/.codex/config.toml` as TOML: `python3 -c 'import tomllib,sys; [tomllib.load(open(f,"rb")) for f in sys.argv[1:]]' <files>` (when `python3` is older than 3.11, check by eye instead that each agent file has `name`, `description` and `developer_instructions`). Check that each agent has `name`, `description` and `developer_instructions`, that review's `developer_instructions` starts with `You are read-only`, and that `config.toml` has `max_depth = 2` under `[agents]` when the developer agreed.
-- Tell the developer the pull request URL from "Add OpenSpec to the project", or why nothing was added.
+- Complete [Shared handover requirements](#shared-handover-requirements).
 - Tell the developer: open `codex` in the team repository and type `start lead on <request>`.
 
 ## Copilot CLI
@@ -224,7 +239,7 @@ Use the skills workflow.
 - Copilot agent files have no `skills` field. When the header has `skills`, put `Use the skills workflow.` as the first line of the body (the header's skill names joined with `, `), followed by a blank line. Add no such line when the header has no `skills`.
 - Drop `read_only` and `skills` from the header. Use everything after the header's closing `---` as `<body>`, unchanged and without the blank line right after the header.
 
-Copilot CLI reads user skills from `~/.agents/skills`, the same folder the Codex CLI section installs to, so one copy serves both harnesses. Copy `skills/workflow/SKILL.md` to `~/.agents/skills/workflow/SKILL.md`, unchanged. Copy `skills/show-me/SKILL.md` and `skills/show-me/LICENSE` to `~/.agents/skills/show-me/`, unchanged. Copy `LICENSE` because the MIT terms require it to travel with the skill. Copy `skills/doc-coauthoring/SKILL.md` to `~/.agents/skills/doc-coauthoring/SKILL.md`, unchanged. A target that already exists with identical content needs no write: say so and go on. Do not use `~/.copilot/skills`.
+Follow [Shared skills for Codex CLI and Copilot CLI](#shared-skills-for-codex-cli-and-copilot-cli). Copilot CLI reads user skills from `~/.agents/skills`, the same folder as Codex. Do not use `~/.copilot/skills`.
 
 Lead and dev work in `.worktrees/<change>` inside the team repository checkout, so this setup writes no Copilot configuration for it. Tell the developer to confirm the folder as trusted when `copilot` first asks in the checkout, and approve lead's and dev's shell and file-write requests when asked: a worktree outside the checkout is refused even with shell and write approved. Never use `--allow-all`.
 
@@ -232,7 +247,6 @@ Then follow `Add OpenSpec to the project` above.
 
 ### Verify and hand over
 
-- List the three installed agent files and the four installed skill files (workflow/SKILL.md, show-me/SKILL.md, show-me/LICENSE, doc-coauthoring/SKILL.md) with their full paths.
 - Check that each agent file's frontmatter parses as YAML and has `name` and `description`, that review's `tools` is `[read, search, execute]`, and that lead and dev have no `tools` line. Example: `python3 -c 'import sys,yaml; [yaml.safe_load(open(f).read().split("---")[1]) for f in sys.argv[1:]]' <files>` (needs PyYAML; otherwise check by eye that the lines between the two `---` are `key: value` lines).
-- Tell the developer the pull request URL from "Add OpenSpec to the project", or why nothing was added.
+- Complete [Shared handover requirements](#shared-handover-requirements).
 - Tell the developer: open `copilot` in the team repository and type `start lead on <request>`.
