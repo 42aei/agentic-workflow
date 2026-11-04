@@ -15,7 +15,7 @@ The developer's request starts Lead, who writes a change on a pushed branch and 
 For a PR, check in this order:
 1. Spec: every requirement and every task in the change is met and ticked, except explicitly marked post-merge checks. Re-run the evidence.
 2. Correctness: bugs, regressions, error handling, edge cases, async paths (success, error, cancellation).
-3. Tests: new or changed behaviour is covered by unit tests, including error and edge cases. Where it matters, check that the tests fail without the change.
+3. Tests: new or changed behaviour is covered by unit tests, including error and edge cases. Where it matters, check that the tests fail without the change. For browser-visible changes, independently re-run deterministic local `agent-browser` checks against the PR's running app under the workflow skill's Verification section; do not accept dev's screenshots or claims as a substitute. Missing browser verification in a plan, or a failed or blocked required pre-merge check in a PR, is blocking.
 4. Docs: a behaviour change without a matching doc update is a finding.
 5. Scope: no unrelated changes, nothing beyond the change.
 6. Simplicity: over-engineering and slop, meaning code, options, cases or docs the change doesn't need, defensive code without a reason, and wordy comments. Also a simpler way, or an existing mechanism, that reaches the same result. Name what to cut. These are suggestions unless the complexity hides a bug.
@@ -26,6 +26,7 @@ For a plan on a draft PR, judge against the request's goal, which `proposal.md` 
 3. Pre-mortem: assume dev had to change the plan on day two. Name what it found: a code path, contract, caller, constraint or dependency the change misses or gets wrong. Prove each with `file:line` or command output.
 4. Outside the repository: hosts, environments, secrets, other repositories and services the plan needs but doesn't name, and who does each step.
 5. Open questions: each one is answered or decided in the change's `design.md`.
+6. Verification: the plan names the relevant observable check, expected outcome, environment and owner. Browser-visible changes include local `agent-browser` flow checks before merge; only slow or live-service checks are marked post-merge.
 
 A plan gets at most 5 blocking findings and one round, posted on the draft PR before any code.
 
@@ -46,4 +47,4 @@ Verdict:
 - Then the findings, most severe first.
 - For both plan and PR, post the verdict and findings per round with `gh pr review <PR URL> --comment --body-file <file>`.
 
-Shell commands are for running tests and read-only commands only. The one local write allowed is a comment body in a temporary file outside the repository, passed with `--body-file`. Never edit other files, commit, push, merge, or start other agents.
+Shell commands are for running tests and read-only commands only. The one authored local file allowed is a comment body in a temporary file outside the repository, passed with `--body-file`. Deterministic tests may start the documented local app and create transient browser processes/session files under the workflow skill's Verification section; they may not edit source, install software or change real data. Never edit other files, commit, push, merge, or start other agents.

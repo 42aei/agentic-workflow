@@ -9,7 +9,7 @@
 - Never clone a repository during setup, the team repository included: no `git clone`, no `gh repo clone`. Use only a checkout the developer names.
 - "A write outside the harness configuration" is any write outside the harness's own user-level folders (`~/.claude`, `~/.codex`, `~/.copilot`, `~/.agents`), for example a file in the team repository's project or the install of a missing tool. A change to an existing setting inside those folders (for example Codex `config.toml`) is asked for too.
 - Never overwrite an existing target file silently: show the difference and ask before replacing it.
-- Install nothing to run a check: no package installs or parser downloads. Leave no temporary files in the harness folders (`~/.claude`, `~/.codex`, `~/.copilot`, `~/.agents`). When no parser is available, check the file by eye; for frontmatter, the lines between the two `---` lines are `key: value` lines. The install of a missing git, gh or OpenSpec in "Install a missing tool" is not a check: it is an install the developer agreed to.
+- Install nothing to run a check: no package installs or parser downloads. Leave no temporary files in the harness folders (`~/.claude`, `~/.codex`, `~/.copilot`, `~/.agents`). When no parser is available, check the file by eye; for frontmatter, the lines between the two `---` lines are `key: value` lines. The install of a missing git, gh, OpenSpec, agent-browser or browser in "Install a missing tool" is not a check: it is an install the developer agreed to. Browser checks may create transient browser processes and session/cache files, but must not install software or change persistent browser configuration.
 
 ## Which harness
 
@@ -17,7 +17,7 @@ Ask which harness the developer uses. For Claude Code, follow the Claude Code se
 
 ## Prerequisites
 
-Run these checks in order. Explain each check in plain words before you run it, the repository permission check included (what it reads and why). Before the repository permission check, ask for the team repository as `owner/name`, then, as a separate question, for the absolute path of the developer's local checkout of it, or none. When git, gh or OpenSpec is missing, follow "Install a missing tool" below, then check again. On any other failure, explain what failed, give the fix below, and stop. Do not continue past a failed prerequisite.
+Run these checks in order. Explain each check in plain words before you run it, the repository permission check included (what it reads and why). Before the repository permission check, ask for the team repository as `owner/name`, then, as a separate question, for the absolute path of the developer's local checkout of it, or none. When git, gh, OpenSpec or agent-browser is missing, follow "Install a missing tool" below, then check again. The browser check has its own missing-browser path below. On any other failure, explain what failed, give the fix below, and stop. Do not continue past a failed prerequisite.
 
 | Check command | Pass | If it fails |
 |---|---|---|
@@ -25,7 +25,28 @@ Run these checks in order. Explain each check in plain words before you run it, 
 | `gh --version` | Prints a version | Follow "Install a missing tool" for gh. |
 | `gh auth status` | Shows `Logged in to github.com` (an error for another host does not matter) | Tell the developer to run `gh auth login`. |
 | `openspec --version` | Prints a version | Follow "Install a missing tool" for OpenSpec. |
+| `agent-browser --version` | Prints a version | Follow "Install a missing tool" for agent-browser. |
+| Browser smoke check below | Opens a page, reads its title and snapshot, and closes the session | Follow "Check the browser"; a CLI version alone is not a pass. |
 | `gh repo view <team repo> --json viewerPermission` | `viewerPermission` is `WRITE`, `MAINTAIN` or `ADMIN` | Tell the developer to ask a repository admin for write access. |
+
+### Check the browser
+
+agent-browser drives a separate headless browser for UI verification. The CLI and its downloaded Chrome for Testing are both required; neither is supplied by the workflow files or OpenSpec. The download is a regenerable tool cache, not project source or the developer's personal browser. A code change cannot replace this runtime dependency when checking a real browser flow.
+
+1. Run `agent-browser skills get core` and read the installed CLI's version-matched guide. Use this built-in guide, not a separately installed third-party skill. If it fails, report the failure and stop.
+2. Before any browser/session command, check for inherited configuration without printing secret values: inspect only the names of set `AGENT_BROWSER_*` environment variables and whether `~/.agent-browser/config.json` or `agent-browser.json` in the command's working directory exists. Ignore only `AGENT_BROWSER_DEFAULT_TIMEOUT` and `AGENT_BROWSER_IDLE_TIMEOUT_MS`, which change timing, not attachment or state. If any other variable is set or either file exists, stop before opening or connecting. Report only the variable names/file paths and ask the developer to provide a clean environment and working directory for the check; do not read config contents, unset variables, edit files or silently override their settings. If this inspection is unavailable, stop and report isolation as unverified. This deliberately conservative gate prevents inherited attachment, profiles, saved authentication, providers and extensions; `--session` alone does not override them. Keep the checked environment and working directory for every command below.
+3. Explain that the following smoke check opens only a blank page in a separate headless session, creates transient session/cache files and does not use the developer's desktop browser or login state. Choose an unused session name in place of `workflow-setup-check` if it already appears in `agent-browser session list`. Use the same name on every command:
+
+   ```sh
+   agent-browser --session workflow-setup-check open about:blank
+   agent-browser --session workflow-setup-check get title
+   agent-browser --session workflow-setup-check snapshot
+   agent-browser --session workflow-setup-check close
+   ```
+
+   Each command must succeed; an empty title and a snapshot with no elements are expected for `about:blank`. Run `close` even if a later check fails, once the browser has opened. Do not use `close --all`, attach to a running browser, load a personal profile or save authentication state.
+4. If opening fails because the browser binary or its system libraries are missing, follow "agent-browser" under "Install a missing tool": explain the download or libraries and ask for approval before installing them. A working CLI does not need reinstalling. After the approved install, repeat the smoke check.
+5. Any other failure (including permissions or an incompatible command): report the failed command and output and stop. Do not switch browser tools, use `npx` to download one implicitly, change browser settings or try privileged flags. Never report browser readiness without a successful smoke check.
 
 ### Check repository readiness
 
@@ -38,7 +59,7 @@ Use the existing checkout the developer named. If there is none, report that pro
 
 ## Install a missing tool
 
-Used when `git --version`, `gh --version` or `openspec --version` fails. Installing software is a write outside the harness folders, so it needs a yes. The commands and links below are from each tool's official documentation.
+Used when `git --version`, `gh --version`, `openspec --version` or `agent-browser --version` fails, or the browser smoke check identifies a missing browser or system libraries. Installing software is a write outside the harness folders, so it needs a yes. The commands and links below are from each tool's official documentation.
 
 ### git
 
@@ -59,6 +80,15 @@ Used when `git --version`, `gh --version` or `openspec --version` fails. Install
 - Official instructions: https://github.com/Fission-AI/OpenSpec/blob/main/docs/installation.md
 - It needs no Node.js. The installer checks the download against the release's checksums and writes one file of 73-99 MB to `~/.local/bin` (Windows: `$env:LOCALAPPDATA\Programs\openspec`). On Alpine Linux, run `apk add libstdc++ libgcc` first.
 
+### agent-browser
+
+- Official instructions: https://github.com/vercel-labs/agent-browser#install
+- CLI on macOS and Linux with Homebrew: `brew install agent-browser`.
+- CLI on Windows (PowerShell), or macOS/Linux without Homebrew: `npm install -g agent-browser`. Check `node --version` and `npm --version` first. If either is missing, explain that the npm installation depends on Node.js and npm, link https://nodejs.org/en/download and ask the developer to install Node.js LTS with npm, then stop. Do not add a package manager or toolchain silently.
+- Browser on macOS and Windows: `agent-browser install`. Linux: `agent-browser install --with-deps`, which also installs browser system libraries and may need administrator rights. These download Chrome for Testing to the tool's browser cache; they do not install workflow files or use the developer's personal browser.
+- Ask separately before installing the CLI and before downloading the browser/installing its system libraries. Show the relevant command and what it writes each time, then wait for a yes. If the CLI already works, skip its installation. Never use `npx agent-browser` as an installation workaround.
+- After installing the CLI, check `agent-browser --version`, then follow "Check the browser". If the browser or Linux libraries are missing, ask before the browser install above and repeat that check afterwards. A declined or failed install leaves setup incomplete.
+
 ### Steps
 
 1. Detect the operating system with `uname -s`: `Darwin` is macOS and `Linux` is Linux. A `uname` that is not found, or output that contains `MINGW`, `MSYS` or `CYGWIN`, means Windows. Do not ask the developer when this answers it.
@@ -66,7 +96,7 @@ Used when `git --version`, `gh --version` or `openspec --version` fails. Install
 3. Say in plain words which tool is missing. Show the command for that system and the official link. For OpenSpec, also say that it writes one 73-99 MB file to `~/.local/bin`. Ask for a yes to run the command. Then stop: your turn ends with that question.
 4. Only when the developer's next message says yes, run the command. If the developer says no, install nothing and stop: setup needs the tool.
 5. If the harness refuses the command, or the command needs sudo or administrator rights you do not have, do not look for another way to install the tool. Give copy-paste instructions instead: the command for the developer's system, the official link, and a request to tell you when it is done. Then stop. When the developer says it is done, check again.
-6. Check again with the same command that failed. If `openspec --version` is still not found, try the installer's-folder check and follow the off-`PATH` guidance in step 2 first. If a check still fails on Windows after an install, tell the developer to open a new terminal and restart setup there: winget installs of git and gh need a new terminal to be found. Otherwise, if a check still fails, report its output and stop.
+6. Check again with the same command that failed; for agent-browser, also complete "Check the browser" before continuing. If `openspec --version` is still not found, try the installer's-folder check and follow the off-`PATH` guidance in step 2 first. If a check still fails on Windows after an install, tell the developer to open a new terminal and restart setup there: winget installs of git and gh need a new terminal to be found. Otherwise, if a check still fails, report its output and stop.
 
 ## Add OpenSpec to the project
 
