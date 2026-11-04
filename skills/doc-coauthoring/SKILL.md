@@ -127,13 +127,9 @@ Ask if this structure works, or if they want to adjust it.
 
 **Once structure is agreed:**
 
-Create the initial document structure with placeholder text for all sections.
-
-Create a markdown file in the working directory. Name it appropriately (e.g., `decision-doc.md`, `technical-spec.md`).
-
 Inform them that the initial structure with placeholders for all sections will be created.
 
-Create file with all section headers and placeholder text.
+Create a markdown file in the working directory with all section headers and placeholder text. Name it appropriately (e.g., `decision-doc.md`, `technical-spec.md`).
 
 Confirm the filename has been created and indicate it's time to fill in each section.
 
@@ -141,19 +137,17 @@ Confirm the filename has been created and indicate it's time to fill in each sec
 
 ### Step 1: Clarifying Questions
 
-Announce work will begin on the [SECTION NAME] section. Ask 5-10 clarifying questions about what should be included:
-
-Generate 5-10 specific questions based on context and section purpose.
+Announce work will begin on the [SECTION NAME] section. Ask 5-10 specific clarifying questions about what should be included, based on context and section purpose.
 
 Inform them they can answer in shorthand or just indicate what's important to cover.
 
 ### Step 2: Brainstorming
 
-For the [SECTION NAME] section, brainstorm [5-20] things that might be included, depending on the section's complexity. Look for:
+For the [SECTION NAME] section, brainstorm 5-20 numbered options for what might be included, depending on the section's complexity. Look for:
 - Context shared that might have been forgotten
 - Angles or considerations not yet mentioned
 
-Generate 5-20 numbered options based on section complexity. At the end, offer to brainstorm more if they want additional options.
+At the end, offer to brainstorm more if they want additional options.
 
 ### Step 3: Curation
 

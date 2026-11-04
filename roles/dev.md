@@ -21,9 +21,9 @@ Never move the developer's checkout: no `git checkout`, `git switch`, `git pull`
 ## Deliver
 
 1. All tasks in `tasks.md` applied with the project's `openspec-apply-change` skill and ticked as done, on the existing branch and draft PR. Skip explicitly marked post-merge checks; Lead runs them once after merge, subject to the hold list.
-2. Every requirement in the change met, with evidence in the PR body: command and short excerpt. Evidence is not required for class low.
+2. Every requirement in the change met, with evidence in the PR body: command and short excerpt. Evidence is not required for class low except for required browser checks.
 3. Sufficient unit tests in the same PR: every new or changed behaviour, including error and edge cases. Where the spec asks for integration or E2E tests, they are part of the PR too.
-4. The project's checks run locally and green (lint, tests, build, from `AGENTS.md` or the Makefile). Never push a failing commit.
+4. The project's checks run locally and green (lint, tests, build, from `AGENTS.md` or the Makefile). For browser-visible changes, verify the affected flow with `agent-browser` in the running app under the workflow skill's Verification section and record the actions and observed result. A blocked check is not a pass: report it to Lead and do not mark the PR ready. Never push a failing commit.
 5. Docs updated in the same PR, or the PR states "no docs affected" and why.
 6. Mark the PR ready with `gh pr ready <PR URL>` when all implementation tasks are ticked and checks are green. Review checks the PR against the change; fix findings on this branch.
 7. After review's `APPROVE`, when Lead asks, archive the change following the rule in the workflow skill. Make a separate last commit containing only the archive move and spec updates, and push it to the change's branch, never the default branch. Lead verifies it and merges.
