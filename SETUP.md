@@ -1,6 +1,6 @@
-# Set up the prerequisites
+# Set up the workflow
 
-Prepare the tools and GitHub login needed for the workshop. No project folder or team repository is needed. Do not ask for one, clone a repository, initialize OpenSpec in a project, install workflow roles or skills, or create commits or pull requests.
+Prepare the workshop prerequisites, then install this repository's workflow agents and skills for the developer's Copilot CLI user. No project folder or team repository is needed. Do not ask for one, clone a repository, initialize OpenSpec in a project, or create commits or pull requests. Do not start the workflow during setup.
 
 ## How to guide setup
 
@@ -86,6 +86,43 @@ The browser download is Chrome for Testing in a regenerable tool cache, not proj
    Each command must succeed. An empty title and a snapshot with no elements are expected. Once opened, close the session even if a later check fails. Never use `close --all`, attach to a running browser, load a personal profile or save authentication state.
 4. If opening fails because the browser or system libraries are missing, explain the relevant install above and ask for approval. After installation, repeat the smoke check. For any other failure, report the failed command and output and stop. Do not switch browser tools, change browser settings or try privileged flags.
 
+## Install the workflow for Copilot CLI
+
+After all prerequisite checks pass, install only the files below at user level. `~` means the developer's home directory, including on Windows. These are Copilot's [personal agents](https://docs.github.com/en/copilot/how-tos/copilot-cli/customize-copilot/create-custom-agents-for-cli) and [personal skills](https://docs.github.com/en/copilot/how-tos/copilot-cli/customize-copilot/add-skills); no project files or other harness configuration are needed.
+
+### Read the source and ask
+
+Read the complete source files from this repository before writing anything. Use an existing checkout of `42aei/agentic-workflow` if available, otherwise read the files through GitHub without cloning. Use the same revision for all seven files; do not substitute the agent's own installed workflow or similarly named skills. If any source cannot be read, stop without installing an incomplete workflow.
+
+| Source in this repository | Destination |
+|---|---|
+| `roles/lead.md` | `~/.copilot/agents/lead.agent.md` |
+| `roles/dev.md` | `~/.copilot/agents/dev.agent.md` |
+| `roles/review.md` | `~/.copilot/agents/review.agent.md` |
+| `skills/workflow/SKILL.md` | `~/.agents/skills/workflow/SKILL.md` |
+| `skills/show-me/SKILL.md` | `~/.agents/skills/show-me/SKILL.md` |
+| `skills/show-me/LICENSE` | `~/.agents/skills/show-me/LICENSE` |
+| `skills/doc-coauthoring/SKILL.md` | `~/.agents/skills/doc-coauthoring/SKILL.md` |
+
+Inspect existing destinations first. Identical files need no write. Show the differences for any file that would be replaced. Explain the files and folders to be created or updated, then ask for approval and wait before writing. Never replace an existing file silently or change unrelated configuration.
+
+### Write the agents and skills
+
+For each role, convert its source frontmatter to Copilot's format:
+
+- Copy `name` and `description` unchanged.
+- For `read_only: true`, add `tools: [read, search, execute]`. These allow reading, searching and shell commands, not the file-editing tool. Shell can still write; the review role's instructions forbid that. For `read_only: false`, add no `tools` line.
+- Drop `read_only` and `skills` from the frontmatter. When `skills` is present, add `Use the skills workflow.` as the first body line, using the source skill names joined with `, `, followed by a blank line.
+- Keep the original body unchanged after that line, excluding the blank line immediately after the source frontmatter.
+
+Copy the four skill files unchanged to their destinations in the table. Keep `show-me/LICENSE`: its MIT terms require it to travel with the skill. Create only the missing destination folders needed for these files. Do not install temporary files or download parsers into the configuration folders.
+
+### Verify the files
+
+Read back all seven installed files and compare them with the expected content. Verify that each agent has valid YAML frontmatter with `name` and `description`, that review has `tools: [read, search, execute]`, and that lead and dev have no `tools` line. Check that all three include `Use the skills workflow.` and preserve their source bodies. Compare the four skill files byte-for-byte with the source. Use an existing parser if available; otherwise inspect the simple frontmatter by eye. Do not install a parser to run this check.
+
 ## Finish
 
-Report which prerequisite checks passed and anything incomplete. Claim browser readiness only after a successful smoke check. Stop here: repository access, Git identity, project configuration and workflow installation belong to later project setup.
+Report the prerequisite results, the full paths of the seven installed files and anything incomplete. Claim browser readiness only after a successful smoke check. Ask the developer to restart Copilot CLI, then use `/agent` to confirm that lead, dev and review appear; file checks alone do not prove that Copilot loaded them.
+
+Stop here. The workflow is installed at user level, not configured for a project. Repository access, Git identity and OpenSpec project initialization remain later project setup. Do not tell the developer the workflow can run in an unprepared project.
