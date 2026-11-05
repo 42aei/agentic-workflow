@@ -55,7 +55,7 @@ Lead checks that the last commit only moved the change to `openspec/changes/arch
 
 ### Checkout rule
 
-Lead and dev never move the developer's checkout: no `git checkout`, `git switch`, `git pull` or `git reset` there, not even `--detach`.
+Lead and dev never move the developer's checkout: no `git checkout`, `git switch`, `git pull` or `git reset` there, not even `--detach`. Remove your worktree with `git worktree remove` after sending the `Merge:` message.
 
 ## Classes
 
